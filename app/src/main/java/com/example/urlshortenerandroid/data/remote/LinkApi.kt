@@ -1,5 +1,8 @@
 package com.example.urlshortenerandroid.data.remote
 
+import com.example.urlshortenerandroid.data.remote.dto.CreateLinkRequest
+import com.example.urlshortenerandroid.data.remote.dto.LinkResponse
+import com.example.urlshortenerandroid.data.remote.dto.LinkStatistics
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE

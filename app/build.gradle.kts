@@ -68,6 +68,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.moshi.kotlin)
+    implementation(libs.okhttp.okhttp)
     implementation(libs.okhttp.logging)
 
     // Жизненный цикл

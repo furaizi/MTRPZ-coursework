@@ -7,6 +7,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.urlshortenerandroid.presentation.ui.DetailsScreen
+import com.example.urlshortenerandroid.presentation.ui.ShortenScreen
+import com.example.urlshortenerandroid.presentation.ui.StatsScreen
 
 @Composable
 fun NavGraph(navController: NavHostController = rememberNavController()) {

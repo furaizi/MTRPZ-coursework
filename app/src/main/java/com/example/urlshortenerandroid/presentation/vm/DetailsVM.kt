@@ -3,10 +3,8 @@ package com.example.urlshortenerandroid.presentation.vm
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.urlshortener.domain.model.Link
-import com.example.urlshortener.domain.usecase.GetLinkDetailsUC
-import com.example.urlshortener.util.UiState
 import com.example.urlshortenerandroid.data.remote.dto.LinkResponse
+import com.example.urlshortenerandroid.domain.usecase.GetLinkDetailsUC
 import com.example.urlshortenerandroid.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

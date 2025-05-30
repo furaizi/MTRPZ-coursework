@@ -3,7 +3,7 @@ package com.example.urlshortenerandroid.presentation.vm
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.urlshortener.domain.usecase.DeleteLinkUC
+import com.example.urlshortenerandroid.domain.usecase.DeleteLinkUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
