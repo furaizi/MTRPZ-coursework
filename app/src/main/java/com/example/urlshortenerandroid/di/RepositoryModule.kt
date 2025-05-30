@@ -1,6 +1,7 @@
 package com.example.urlshortenerandroid.di
 
 import com.example.urlshortenerandroid.data.remote.LinkApi
+import com.example.urlshortenerandroid.data.repository.LinkRepository
 import com.example.urlshortenerandroid.data.repository.LinkRepositoryImpl
 import com.example.urlshortenerandroid.domain.usecase.CreateLinkUC
 import com.example.urlshortenerandroid.domain.usecase.DeleteLinkUC
@@ -23,15 +24,15 @@ object RepositoryModule {
 
     // -------- Use-cases --------
     @Provides
-    fun provideCreateLinkUC(repo: LinkRepositoryImpl) = CreateLinkUC(repo)
+    fun provideCreateLinkUC(repo: LinkRepository) = CreateLinkUC(repo)
 
     @Provides
-    fun provideGetDetailsUC(repo: LinkRepositoryImpl) = GetLinkDetailsUC(repo)
+    fun provideGetDetailsUC(repo: LinkRepository) = GetLinkDetailsUC(repo)
 
     @Provides
-    fun provideGetStatsUC(repo: LinkRepositoryImpl) = GetLinkStatsUC(repo)
+    fun provideGetStatsUC(repo: LinkRepository) = GetLinkStatsUC(repo)
 
     @Provides
-    fun provideDeleteLinkUC(repo: LinkRepositoryImpl) = DeleteLinkUC(repo)
+    fun provideDeleteLinkUC(repo: LinkRepository) = DeleteLinkUC(repo)
 
 }

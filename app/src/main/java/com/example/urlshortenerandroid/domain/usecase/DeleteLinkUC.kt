@@ -1,5 +1,6 @@
 package com.example.urlshortenerandroid.domain.usecase
 
+import com.example.urlshortenerandroid.data.repository.LinkRepository
 import com.example.urlshortenerandroid.data.repository.LinkRepositoryImpl
 import javax.inject.Inject
 import retrofit2.Response
@@ -10,7 +11,7 @@ import retrofit2.Response
  * API возвращает 204 No Content → Result<Unit>.
  */
 class DeleteLinkUC @Inject constructor(
-    private val repo: LinkRepositoryImpl
+    private val repo: LinkRepository
 ) {
     suspend operator fun invoke(id: String): Result<Response<Unit>> = repo.delete(id)
 }

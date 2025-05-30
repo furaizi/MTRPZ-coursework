@@ -1,6 +1,7 @@
 package com.example.urlshortenerandroid.domain.usecase
 
 import com.example.urlshortenerandroid.data.remote.dto.LinkResponse
+import com.example.urlshortenerandroid.data.repository.LinkRepository
 import com.example.urlshortenerandroid.data.repository.LinkRepositoryImpl
 import javax.inject.Inject
 
@@ -11,7 +12,7 @@ import javax.inject.Inject
  * @return Result<Link> — success c объектом Link при 200 OK или failure при ошибке сети/валидации.
  */
 class CreateLinkUC @Inject constructor(
-    private val repo: LinkRepositoryImpl
+    private val repo: LinkRepository
 ) {
     suspend operator fun invoke(url: String): Result<LinkResponse> = repo.create(url)
 }
