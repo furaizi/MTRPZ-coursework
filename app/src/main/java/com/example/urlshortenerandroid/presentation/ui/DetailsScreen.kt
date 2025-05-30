@@ -81,19 +81,26 @@ fun DetailsScreen(
                 Text("Короткий URL:")
                 Text(link.url, color = MaterialTheme.colorScheme.primary)
 
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(
+                        onClick = {
                         clipboard.setText(AnnotatedString(link.url))
                         Toast.makeText(ctx, "Скопировано", Toast.LENGTH_SHORT).show()
-                    }) { Text("Копировать") }
+                    },
+                        modifier = Modifier.fillMaxWidth()
+                        ) { Text("Копировать") }
 
-                    Button(onClick = onStatsClick) { Text("Статистика") }
+                    Button(
+                        onClick = onStatsClick,
+                        modifier = Modifier.fillMaxWidth()
+                    ) { Text("Статистика") }
 
                     OutlinedButton(
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = MaterialTheme.colorScheme.error
                         ),
-                        onClick = { showDialog = true }
+                        onClick = { showDialog = true },
+                        modifier = Modifier.fillMaxWidth()
                     ) { Text("Удалить") }
                 }
             }
