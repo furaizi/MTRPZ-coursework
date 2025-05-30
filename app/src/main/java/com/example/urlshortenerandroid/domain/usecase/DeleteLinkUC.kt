@@ -1,7 +1,7 @@
 package com.example.urlshortenerandroid.domain.usecase
 
 import com.example.urlshortenerandroid.data.repository.LinkRepository
-import jakarta.inject.Inject
+import javax.inject.Inject
 import retrofit2.Response
 
 /**

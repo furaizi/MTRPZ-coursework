@@ -2,7 +2,7 @@ package com.example.urlshortenerandroid.domain.usecase
 
 import com.example.urlshortenerandroid.data.remote.dto.LinkStatistics
 import com.example.urlshortenerandroid.data.repository.LinkRepository
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 /**
  * UC для получения базовой статистики переходов по ссылке.

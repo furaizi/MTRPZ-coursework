@@ -4,7 +4,7 @@ import com.example.urlshortenerandroid.data.remote.LinkApi
 import com.example.urlshortenerandroid.data.remote.dto.CreateLinkRequest
 import com.example.urlshortenerandroid.data.remote.dto.LinkResponse
 import com.example.urlshortenerandroid.data.remote.dto.LinkStatistics
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 class LinkRepository @Inject constructor(private val api: LinkApi) {
 
