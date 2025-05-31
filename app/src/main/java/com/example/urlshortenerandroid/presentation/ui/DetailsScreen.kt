@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.urlshortenerandroid.R
 import com.example.urlshortenerandroid.data.remote.dto.LinkResponse
+import com.example.urlshortenerandroid.presentation.ui.components.*
 import com.example.urlshortenerandroid.presentation.vm.DeleteVM
 import com.example.urlshortenerandroid.presentation.vm.DetailsVM
 import com.example.urlshortenerandroid.util.UiState
@@ -22,16 +23,19 @@ import kotlinx.coroutines.flow.collectLatest
 /**
  * Screen showing link details.
  *
- * @param linkId passed as NavArg; SavedStateHandle already holds this in the ViewModel.
- * @param onStatsClick navigation callback to the statistics screen.
+ * @param linkId Passed as a NavArg; SavedStateHandle already has this in the ViewModel.
+ * @param vm DetailsVM instance (Hilt-injected).
+ * @param deleteVM DeleteVM instance (Hilt-injected).
+ * @param onStatsClick Callback to navigate to the statistics screen.
+ * @param onDeleted Callback invoked when deletion succeeds, so NavController can pop back.
  */
 @Composable
 fun DetailsScreen(
-    linkId: String,                       // used only as a NavBackStack key
+    linkId: String,
     vm: DetailsVM = hiltViewModel(),
-    deleteVM: DeleteVM = hiltViewModel(), // one ViewModel per screen
+    deleteVM: DeleteVM = hiltViewModel(),
     onStatsClick: () -> Unit,
-    onDeleted: () -> Unit               // <-- NEW callback
+    onDeleted: () -> Unit
 ) {
     val state by vm.uiState.collectAsState()
     val ctx = LocalContext.current
@@ -43,9 +47,7 @@ fun DetailsScreen(
         deleteVM.events.collectLatest { event ->
             when (event) {
                 DeleteVM.Event.Success -> {
-                    // 1) Show a toast
                     Toast.makeText(ctx, ctx.getString(R.string.toast_deleted), Toast.LENGTH_SHORT).show()
-                    // 2) Invoke the callback so NavController pops back
                     onDeleted()
                 }
                 is DeleteVM.Event.Error -> {
@@ -57,27 +59,29 @@ fun DetailsScreen(
     }
 
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         when (state) {
             UiState.Loading -> {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    CircularProgressIndicator()
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.text_loading))
-                }
+                LoadingRow(
+                    text = stringResource(R.string.text_loading),
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
 
-            is UiState.Error -> Text(
-                text = (state as UiState.Error).msg,
-                color = MaterialTheme.colorScheme.error
-            )
+            is UiState.Error -> {
+                Text(
+                    text = (state as UiState.Error).msg,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
 
             is UiState.Success -> {
                 val link = (state as UiState.Success<LinkResponse>).data
+
                 // --- Main information ---
                 Text(
                     text = stringResource(R.string.label_id, link.shortCode),
@@ -86,34 +90,29 @@ fun DetailsScreen(
                 Text(stringResource(R.string.label_original_url))
                 Text(link.originalUrl, style = MaterialTheme.typography.bodyMedium)
 
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(stringResource(R.string.label_short_url_details))
                 Text(link.url, color = MaterialTheme.colorScheme.primary)
 
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(
-                        onClick = {
-                            clipboard.setText(AnnotatedString(link.url))
-                            Toast.makeText(ctx, ctx.getString(R.string.text_copied), Toast.LENGTH_SHORT).show()
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    FullWidthOutlinedButton(onClick = {
+                        clipboard.setText(AnnotatedString(link.url))
+                        Toast.makeText(ctx, ctx.getString(R.string.text_copied), Toast.LENGTH_SHORT).show()
+                    }) {
                         Text(stringResource(R.string.button_copy))
                     }
 
-                    Button(
-                        onClick = onStatsClick,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
+                    FullWidthButton(onClick = onStatsClick) {
                         Text(stringResource(R.string.title_statistics))
                     }
 
-                    OutlinedButton(
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = MaterialTheme.colorScheme.error
-                        ),
-                        onClick = { showDialog = true },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
+                    FullWidthDangerOutlinedButton(onClick = { showDialog = true }) {
                         Text(stringResource(R.string.button_delete))
                     }
                 }
@@ -123,12 +122,9 @@ fun DetailsScreen(
         }
     }
 
-    // Confirmation dialog for deletion
     if (showDialog) {
         DeleteDialog(
-            onConfirm = {
-                deleteVM.delete()
-            },
+            onConfirm = { deleteVM.delete() },
             onDismiss = { showDialog = false }
         )
     }
