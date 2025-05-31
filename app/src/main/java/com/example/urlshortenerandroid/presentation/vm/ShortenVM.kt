@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.urlshortenerandroid.domain.usecase.CreateLinkUC
 import com.example.urlshortenerandroid.data.remote.dto.LinkResponse
+import com.example.urlshortenerandroid.util.NetworkResult
 import com.example.urlshortenerandroid.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,10 +28,17 @@ class ShortenVM @Inject constructor(
 
     fun shorten(url: String) = viewModelScope.launch {
         _uiState.value = UiState.Loading
-        createLink(url).fold(
-            onSuccess = { link -> _uiState.value = UiState.Success(link) },
-            onFailure = { e -> _uiState.value = UiState.Error(e.localizedMessage ?: "Unknown error") }
-        )
+        when (val result = createLink(url)) {
+            is NetworkResult.Success -> {
+                _uiState.value = UiState.Success(result.data)
+            }
+            is NetworkResult.Error -> {
+                _uiState.value = UiState.Error(result.message)
+            }
+            else -> {
+                _uiState.value = UiState.Error("Unknown error")
+            }
+        }
     }
 
     fun reset() {

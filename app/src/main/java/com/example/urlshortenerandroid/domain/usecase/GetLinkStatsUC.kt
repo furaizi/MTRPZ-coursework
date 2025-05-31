@@ -10,5 +10,5 @@ import javax.inject.Inject
 class GetLinkStatsUC @Inject constructor(
     private val repo: LinkRepository
 ) {
-    suspend operator fun invoke(id: String): Result<LinkStatistics> = repo.stats(id)
+    suspend operator fun invoke(id: String) = repo.stats(id)
 }

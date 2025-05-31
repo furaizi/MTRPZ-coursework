@@ -10,5 +10,5 @@ import javax.inject.Inject
 class GetLinkDetailsUC @Inject constructor(
     private val repo: LinkRepository
 ) {
-    suspend operator fun invoke(id: String): Result<LinkResponse> = repo.details(id)
+    suspend operator fun invoke(id: String) = repo.details(id)
 }

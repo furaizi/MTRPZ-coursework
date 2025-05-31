@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.urlshortenerandroid.domain.usecase.DeleteLinkUC
+import com.example.urlshortenerandroid.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -32,9 +33,18 @@ class DeleteVM @Inject constructor(
     val events = _events.receiveAsFlow()
 
     fun delete() = viewModelScope.launch {
-        deleteLink(linkId).fold(
-            onSuccess = { _events.send(Event.Success) },
-            onFailure = { _events.send(Event.Error(it.message ?: "Error deleting")) }
-        )
+        // Start deletion and handle NetworkResult
+        when (val result = deleteLink(linkId)) {
+            is NetworkResult.Success -> {
+                _events.send(Event.Success)
+            }
+            is NetworkResult.Error -> {
+                _events.send(Event.Error(result.message))
+            }
+            // We do not handle Loading here because deleteLink is a single call
+            else -> {
+                _events.send(Event.Error("Unknown error"))
+            }
+        }
     }
 }

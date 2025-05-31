@@ -12,5 +12,5 @@ import retrofit2.Response
 class DeleteLinkUC @Inject constructor(
     private val repo: LinkRepository
 ) {
-    suspend operator fun invoke(id: String): Result<Response<Unit>> = repo.delete(id)
+    suspend operator fun invoke(id: String) = repo.delete(id)
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.urlshortenerandroid.data.remote.dto.LinkStatistics
 import com.example.urlshortenerandroid.domain.usecase.GetLinkStatsUC
+import com.example.urlshortenerandroid.util.NetworkResult
 import com.example.urlshortenerandroid.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,9 +35,16 @@ class StatsVM @Inject constructor(
 
     fun refresh() = viewModelScope.launch {
         _uiState.value = UiState.Loading
-        getStats(linkId).fold(
-            onSuccess = { _uiState.value = UiState.Success(it) },
-            onFailure = { _uiState.value = UiState.Error(it.message ?: "Failed to fetch statistics") }
-        )
+        when (val result = getStats(linkId)) {
+            is NetworkResult.Success -> {
+                _uiState.value = UiState.Success(result.data)
+            }
+            is NetworkResult.Error -> {
+                _uiState.value = UiState.Error(result.message)
+            }
+            else -> {
+                _uiState.value = UiState.Error("Unknown error")
+            }
+        }
     }
 }

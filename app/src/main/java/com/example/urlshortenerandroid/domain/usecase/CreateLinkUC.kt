@@ -13,5 +13,5 @@ import javax.inject.Inject
 class CreateLinkUC @Inject constructor(
     private val repo: LinkRepository
 ) {
-    suspend operator fun invoke(url: String): Result<LinkResponse> = repo.create(url)
+    suspend operator fun invoke(url: String) = repo.create(url)
 }
