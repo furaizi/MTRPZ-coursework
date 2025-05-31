@@ -14,21 +14,35 @@ import com.example.urlshortenerandroid.presentation.ui.StatsScreen
 @Composable
 fun NavGraph(navController: NavHostController = rememberNavController()) {
     NavHost(navController, startDestination = Destinations.Shorten.name) {
-        composable(Destinations.Shorten.name)   { ShortenScreen { id ->
-            navController.navigate("${Destinations.Details.name}/$id") } }
+        composable(Destinations.Shorten.name) {
+            ShortenScreen { id ->
+                navController.navigate("${Destinations.Details.name}/$id")
+            }
+        }
 
         composable(
             route = "${Destinations.Details.name}/{id}",
             arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { backStackEntry ->
             val linkId = backStackEntry.arguments!!.getString("id")!!
-            DetailsScreen(linkId,
-                onStatsClick = { navController.navigate("${Destinations.Stats.name}/$linkId") })
+
+            DetailsScreen(
+                linkId = linkId,
+                onStatsClick = {
+                    navController.navigate("${Destinations.Stats.name}/$linkId")
+                },
+                onDeleted = {
+                    // When deletion succeeds, pop back to the previous screen
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable(
             route = "${Destinations.Stats.name}/{id}",
             arguments = listOf(navArgument("id") { type = NavType.StringType })
-        ) { StatsScreen(it.arguments!!.getString("id")!!) }
+        ) {
+            StatsScreen(it.arguments!!.getString("id")!!)
+        }
     }
 }
