@@ -30,7 +30,8 @@ fun DetailsScreen(
     linkId: String,                       // used only as a NavBackStack key
     vm: DetailsVM = hiltViewModel(),
     deleteVM: DeleteVM = hiltViewModel(), // one ViewModel per screen
-    onStatsClick: () -> Unit
+    onStatsClick: () -> Unit,
+    onDeleted: () -> Unit               // <-- NEW callback
 ) {
     val state by vm.uiState.collectAsState()
     val ctx = LocalContext.current
@@ -42,8 +43,10 @@ fun DetailsScreen(
         deleteVM.events.collectLatest { event ->
             when (event) {
                 DeleteVM.Event.Success -> {
+                    // 1) Show a toast
                     Toast.makeText(ctx, ctx.getString(R.string.toast_deleted), Toast.LENGTH_SHORT).show()
-                    // Close the screen – navigation controller should handle this externally
+                    // 2) Invoke the callback so NavController pops back
+                    onDeleted()
                 }
                 is DeleteVM.Event.Error -> {
                     Toast.makeText(ctx, event.msg, Toast.LENGTH_LONG).show()
@@ -69,7 +72,7 @@ fun DetailsScreen(
             }
 
             is UiState.Error -> Text(
-                (state as UiState.Error).msg,
+                text = (state as UiState.Error).msg,
                 color = MaterialTheme.colorScheme.error
             )
 
@@ -77,7 +80,7 @@ fun DetailsScreen(
                 val link = (state as UiState.Success<LinkResponse>).data
                 // --- Main information ---
                 Text(
-                    stringResource(R.string.label_id, link.shortCode),
+                    text = stringResource(R.string.label_id, link.shortCode),
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(stringResource(R.string.label_original_url))
@@ -123,7 +126,9 @@ fun DetailsScreen(
     // Confirmation dialog for deletion
     if (showDialog) {
         DeleteDialog(
-            onConfirm = { deleteVM.delete() },
+            onConfirm = {
+                deleteVM.delete()
+            },
             onDismiss = { showDialog = false }
         )
     }
