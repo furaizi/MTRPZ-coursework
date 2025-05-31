@@ -8,9 +8,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.urlshortenerandroid.R
 import com.example.urlshortenerandroid.data.remote.dto.LinkResponse
 import com.example.urlshortenerandroid.presentation.vm.DeleteVM
 import com.example.urlshortenerandroid.presentation.vm.DetailsVM
@@ -18,16 +20,16 @@ import com.example.urlshortenerandroid.util.UiState
 import kotlinx.coroutines.flow.collectLatest
 
 /**
- * Экран деталей ссылки.
+ * Screen showing link details.
  *
- * @param linkId передаётся как NavArg, но SavedStateHandle уже есть в VM.
- * @param onStatsClick навигация к экрану статистики.
+ * @param linkId passed as NavArg; SavedStateHandle already holds this in the ViewModel.
+ * @param onStatsClick navigation callback to the statistics screen.
  */
 @Composable
 fun DetailsScreen(
-    linkId: String,                      // нужен только для ключа NavBackStack
+    linkId: String,                       // used only as a NavBackStack key
     vm: DetailsVM = hiltViewModel(),
-    deleteVM: DeleteVM = hiltViewModel(), // один VM на экран
+    deleteVM: DeleteVM = hiltViewModel(), // one ViewModel per screen
     onStatsClick: () -> Unit
 ) {
     val state by vm.uiState.collectAsState()
@@ -35,16 +37,16 @@ fun DetailsScreen(
     val clipboard = LocalClipboardManager.current
     var showDialog by remember { mutableStateOf(false) }
 
-    // Слушаем одноразовые события DeleteVM
+    // Listen to one-time events from DeleteVM
     LaunchedEffect(Unit) {
-        deleteVM.events.collectLatest {
-            when (it) {
+        deleteVM.events.collectLatest { event ->
+            when (event) {
                 DeleteVM.Event.Success -> {
-                    Toast.makeText(ctx, "Удалено", Toast.LENGTH_SHORT).show()
-                    // Закрыть экран — пусть navController.handleBack() в вызывающем месте
+                    Toast.makeText(ctx, ctx.getString(R.string.toast_deleted), Toast.LENGTH_SHORT).show()
+                    // Close the screen – navigation controller should handle this externally
                 }
                 is DeleteVM.Event.Error -> {
-                    Toast.makeText(ctx, it.msg, Toast.LENGTH_LONG).show()
+                    Toast.makeText(ctx, event.msg, Toast.LENGTH_LONG).show()
                     showDialog = false
                 }
             }
@@ -62,7 +64,7 @@ fun DetailsScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     CircularProgressIndicator()
                     Spacer(Modifier.width(8.dp))
-                    Text("Загружаем…")
+                    Text(stringResource(R.string.text_loading))
                 }
             }
 
@@ -73,27 +75,34 @@ fun DetailsScreen(
 
             is UiState.Success -> {
                 val link = (state as UiState.Success<LinkResponse>).data
-                /* --- Основная информация --- */
-                Text("ID: ${link.shortCode}")
-                Text("Исходный URL:")
+                // --- Main information ---
+                Text(
+                    stringResource(R.string.label_id, link.shortCode),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(stringResource(R.string.label_original_url))
                 Text(link.originalUrl, style = MaterialTheme.typography.bodyMedium)
 
-                Text("Короткий URL:")
+                Text(stringResource(R.string.label_short_url_details))
                 Text(link.url, color = MaterialTheme.colorScheme.primary)
 
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(
                         onClick = {
-                        clipboard.setText(AnnotatedString(link.url))
-                        Toast.makeText(ctx, "Скопировано", Toast.LENGTH_SHORT).show()
-                    },
+                            clipboard.setText(AnnotatedString(link.url))
+                            Toast.makeText(ctx, ctx.getString(R.string.text_copied), Toast.LENGTH_SHORT).show()
+                        },
                         modifier = Modifier.fillMaxWidth()
-                        ) { Text("Копировать") }
+                    ) {
+                        Text(stringResource(R.string.button_copy))
+                    }
 
                     Button(
                         onClick = onStatsClick,
                         modifier = Modifier.fillMaxWidth()
-                    ) { Text("Статистика") }
+                    ) {
+                        Text(stringResource(R.string.title_statistics))
+                    }
 
                     OutlinedButton(
                         colors = ButtonDefaults.outlinedButtonColors(
@@ -101,15 +110,17 @@ fun DetailsScreen(
                         ),
                         onClick = { showDialog = true },
                         modifier = Modifier.fillMaxWidth()
-                    ) { Text("Удалить") }
+                    ) {
+                        Text(stringResource(R.string.button_delete))
+                    }
                 }
             }
 
-            else -> {}
+            else -> { /* no-op */ }
         }
     }
 
-    /* Диалог подтверждения удаления */
+    // Confirmation dialog for deletion
     if (showDialog) {
         DeleteDialog(
             onConfirm = { deleteVM.delete() },
