@@ -1,3 +1,6 @@
+import io.grpc.internal.SharedResourceHolder.release
+import org.gradle.kotlin.dsl.release
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -22,6 +25,15 @@ android {
         buildConfigField("String", "BASE_URL", "\"https://api.example.com/\"")
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("url-shortener.keystore")
+            storePassword = "12345678"
+            keyAlias = "url-shortener"
+            keyPassword = "12345678"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -29,6 +41,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 

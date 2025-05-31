@@ -16,6 +16,9 @@ jobs:
           distribution: 'temurin'
           java-version: 21
 
+      - name: Decode release keystore
+        run: echo "${{ secrets.URL_SHORTENER_KEY }}" | base64 --decode > app/url-shortener.keystore
+
       - name: Run Unit Tests
         run: ./gradlew test
 
@@ -24,6 +27,9 @@ jobs:
 
       - name: Assemble Release APK
         run: ./gradlew assembleRelease
+
+      - name: Clean up keystore
+        run: rm app/url-shortener.keystore
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
@@ -35,4 +41,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-release.apk
-          path: app/build/outputs/apk/release/app-release-unsigned.apk
+          path: app/build/outputs/apk/release/app-release.apk
