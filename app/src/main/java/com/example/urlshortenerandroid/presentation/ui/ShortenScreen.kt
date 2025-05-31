@@ -14,14 +14,16 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.urlshortenerandroid.R
-import com.example.urlshortenerandroid.presentation.vm.ShortenVM
 import com.example.urlshortenerandroid.data.remote.dto.LinkResponse
+import com.example.urlshortenerandroid.presentation.ui.components.*
+import com.example.urlshortenerandroid.presentation.vm.ShortenVM
 import com.example.urlshortenerandroid.util.UiState
 
 /**
  * Screen "Shorten Link".
  *
- * @param onCreated callback with linkId for navigation to DetailsScreen.
+ * @param vm ShortenVM instance (Hilt-injected).
+ * @param onCreated Callback with the new linkId to navigate to DetailsScreen.
  */
 @Composable
 fun ShortenScreen(
@@ -34,7 +36,7 @@ fun ShortenScreen(
     val ctx = LocalContext.current
 
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -47,47 +49,65 @@ fun ShortenScreen(
             singleLine = true
         )
 
-        Button(
-            onClick = { vm.shorten(url) },
-            enabled = url.isNotBlank(),
-            modifier = Modifier.align(Alignment.End)
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
         ) {
-            Text(stringResource(R.string.button_shorten))
+            FullWidthButton(
+                onClick = { vm.shorten(url) },
+                enabled = url.isNotBlank()
+            ) {
+                Text(stringResource(R.string.button_shorten))
+            }
         }
 
-        when (state) {
-            UiState.Idle -> { /* empty */ }
+        Spacer(modifier = Modifier.height(8.dp))
 
-            UiState.Loading -> Row(verticalAlignment = Alignment.CenterVertically) {
-                CircularProgressIndicator()
-                Spacer(Modifier.width(8.dp))
-                Text(stringResource(R.string.text_creating_link))
+        when (state) {
+            UiState.Idle -> {
+                // No UI for idle state
+            }
+
+            UiState.Loading -> {
+                LoadingRow(
+                    text = stringResource(R.string.text_creating_link),
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
 
             is UiState.Error -> {
                 Text(
-                    (state as UiState.Error).msg,
+                    text = (state as UiState.Error).msg,
                     color = MaterialTheme.colorScheme.error
                 )
             }
 
             is UiState.Success -> {
                 val link = (state as UiState.Success<LinkResponse>).data
+
                 Text(
                     stringResource(R.string.label_short_url),
                     style = MaterialTheme.typography.labelLarge
                 )
-                Text(link.url, color = MaterialTheme.colorScheme.primary)
-                Spacer(Modifier.height(4.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = {
+                Text(
+                    link.url,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    FullWidthOutlinedButton(onClick = {
                         clipboard.setText(AnnotatedString(link.url))
                         Toast.makeText(ctx, ctx.getString(R.string.text_copied), Toast.LENGTH_SHORT).show()
                     }) {
                         Text(stringResource(R.string.button_copy))
                     }
 
-                    Button(onClick = { onCreated(link.shortCode) }) {
+                    FullWidthButton(onClick = { onCreated(link.shortCode) }) {
                         Text(stringResource(R.string.button_details))
                     }
                 }
