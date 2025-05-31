@@ -1,14 +1,13 @@
 package com.example.urlshortenerandroid.domain.usecase
 
 import com.example.urlshortenerandroid.data.repository.LinkRepository
-import com.example.urlshortenerandroid.data.repository.LinkRepositoryImpl
 import javax.inject.Inject
 import retrofit2.Response
 
 /**
- * UC удаляет короткую ссылку.
+ * Use case to delete a short link.
  *
- * API возвращает 204 No Content → Result<Unit>.
+ * API returns 204 No Content → Result<Unit>.
  */
 class DeleteLinkUC @Inject constructor(
     private val repo: LinkRepository

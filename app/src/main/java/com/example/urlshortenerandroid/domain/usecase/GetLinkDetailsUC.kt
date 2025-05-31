@@ -2,11 +2,10 @@ package com.example.urlshortenerandroid.domain.usecase
 
 import com.example.urlshortenerandroid.data.remote.dto.LinkResponse
 import com.example.urlshortenerandroid.data.repository.LinkRepository
-import com.example.urlshortenerandroid.data.repository.LinkRepositoryImpl
 import javax.inject.Inject
 
 /**
- * UC для получения детальной информации о ссылке.
+ * Use case to fetch detailed information about a link.
  */
 class GetLinkDetailsUC @Inject constructor(
     private val repo: LinkRepository
