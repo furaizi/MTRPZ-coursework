@@ -18,6 +18,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "BASE_URL", "\"https://api.example.com/\"")
     }
 
     buildTypes {
@@ -41,6 +43,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {
@@ -76,7 +79,6 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.moshi.moshi)
     implementation(libs.moshi.kotlin)
-    implementation(libs.moshi.java8)
     implementation(libs.okhttp.okhttp)
     implementation(libs.okhttp.logging)
 

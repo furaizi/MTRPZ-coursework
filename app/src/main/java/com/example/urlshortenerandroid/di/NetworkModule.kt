@@ -1,5 +1,6 @@
 package com.example.urlshortenerandroid.di
 
+import com.example.urlshortenerandroid.BuildConfig
 import com.example.urlshortenerandroid.data.remote.LinkApi
 import com.example.urlshortenerandroid.data.remote.adapters.LocalDateTimeAdapter
 import com.squareup.moshi.Moshi
@@ -16,7 +17,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    private const val BASE_URL = ""
 
     @Provides
     @Singleton
@@ -32,7 +32,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun retrofit(client: OkHttpClient, moshi: Moshi): Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(BuildConfig.BASE_URL)
         .client(client)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
