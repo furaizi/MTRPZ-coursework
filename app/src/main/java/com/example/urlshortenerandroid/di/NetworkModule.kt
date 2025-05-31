@@ -25,6 +25,8 @@ object NetworkModule {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         }).build()
 
+    @Provides
+    @Singleton
     fun moshi(): Moshi = Moshi.Builder()
         .add(LocalDateTimeAdapter())
         .build()
