@@ -10,11 +10,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.urlshortenerandroid.R
 import com.example.urlshortenerandroid.data.remote.dto.LinkStatistics
+import com.example.urlshortenerandroid.presentation.ui.components.FullWidthButton
+import com.example.urlshortenerandroid.presentation.ui.components.LoadingRow
 import com.example.urlshortenerandroid.presentation.vm.StatsVM
 import com.example.urlshortenerandroid.util.UiState
 
 /**
- * Screen showing link statistics: total clicks and last access time.
+ * Screen showing link statistics: total clicks, unique visitors, last access time.
+ *
+ * @param linkShortCode The short code of the link to fetch stats for.
+ * @param vm StatsVM instance (Hilt-injected).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,26 +31,38 @@ fun StatsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.title_statistics)) })
+            TopAppBar(
+                title = { Text(stringResource(R.string.title_statistics)) }
+            )
         }
-    ) { inner ->
+    ) { innerPadding ->
         Box(
             modifier = Modifier
-                .padding(inner)
+                .padding(innerPadding)
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             when (state) {
-                UiState.Loading -> CircularProgressIndicator()
+                UiState.Loading -> {
+                    LoadingRow(
+                        text = stringResource(R.string.text_loading),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
 
-                is UiState.Error -> Text(
-                    (state as UiState.Error).msg,
-                    color = MaterialTheme.colorScheme.error
-                )
+                is UiState.Error -> {
+                    Text(
+                        text = (state as UiState.Error).msg,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
 
                 is UiState.Success -> {
                     val stats = (state as UiState.Success<LinkStatistics>).data
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(16.dp)
+                    ) {
                         Text(
                             stringResource(R.string.text_total_clicks, stats.clicks),
                             style = MaterialTheme.typography.headlineSmall
@@ -58,13 +75,18 @@ fun StatsScreen(
                             stringResource(R.string.text_last_access, stats.lastAccessedAt.toString()),
                             style = MaterialTheme.typography.bodyMedium
                         )
-                        Button(onClick = { vm.refresh() }) {
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        FullWidthButton(onClick = { vm.refresh() }) {
                             Text(stringResource(R.string.button_refresh))
                         }
                     }
                 }
 
-                else -> { /* no-op */ }
+                else -> {
+                    // UiState.Idle or other states – no-op
+                }
             }
         }
     }
