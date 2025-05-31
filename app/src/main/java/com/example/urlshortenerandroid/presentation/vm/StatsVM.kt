@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * VM для экрана статистики переходов.
- * Можно дергать refresh() для pull-to-refresh.
+ * ViewModel for the statistics screen.
+ * Call refresh() for pull-to-refresh functionality.
  */
 @HiltViewModel
 class StatsVM @Inject constructor(
@@ -28,13 +28,15 @@ class StatsVM @Inject constructor(
     private val _uiState = MutableStateFlow<UiState<LinkStatistics>>(UiState.Loading)
     val uiState: StateFlow<UiState<LinkStatistics>> = _uiState.asStateFlow()
 
-    init { refresh() }
+    init {
+        refresh()
+    }
 
     fun refresh() = viewModelScope.launch {
         _uiState.value = UiState.Loading
         getStats(linkId).fold(
             onSuccess = { _uiState.value = UiState.Success(it) },
-            onFailure = { _uiState.value = UiState.Error(it.message ?: "Не удалось получить статистику") }
+            onFailure = { _uiState.value = UiState.Error(it.message ?: "Failed to fetch statistics") }
         )
     }
 }

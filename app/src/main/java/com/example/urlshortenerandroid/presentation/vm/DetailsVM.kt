@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * VM экрана с детальной информацией о ссылке.
- * linkId приходит из NavArgs в SavedStateHandle: navController.navigate("Details/{id}").
+ * ViewModel for the "Link Details" screen.
+ * linkId comes from NavArgs in SavedStateHandle: navController.navigate("Details/{id}").
  */
 @HiltViewModel
 class DetailsVM @Inject constructor(
@@ -28,13 +28,15 @@ class DetailsVM @Inject constructor(
     private val _uiState = MutableStateFlow<UiState<LinkResponse>>(UiState.Loading)
     val uiState: StateFlow<UiState<LinkResponse>> = _uiState.asStateFlow()
 
-    init { load() }
+    init {
+        load()
+    }
 
     fun load() = viewModelScope.launch {
         _uiState.value = UiState.Loading
         getDetails(linkId).fold(
             onSuccess = { _uiState.value = UiState.Success(it) },
-            onFailure = { _uiState.value = UiState.Error(it.message ?: "Ошибка получения данных") }
+            onFailure = { _uiState.value = UiState.Error(it.message ?: "Error fetching data") }
         )
     }
 }

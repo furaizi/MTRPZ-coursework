@@ -12,10 +12,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * VM для экрана "Сократить ссылку".
+ * ViewModel for the "Shorten Link" screen.
  *
- * ― Хранит UiState<Link>.
- * ― Вызывает UseCase для создания ссылки.
+ * ― Holds UiState<LinkResponse>.
+ * ― Calls UseCase to create a shortened link.
  */
 @HiltViewModel
 class ShortenVM @Inject constructor(
@@ -29,9 +29,11 @@ class ShortenVM @Inject constructor(
         _uiState.value = UiState.Loading
         createLink(url).fold(
             onSuccess = { link -> _uiState.value = UiState.Success(link) },
-            onFailure = { e   -> _uiState.value = UiState.Error(e.localizedMessage ?: "Неизвестная ошибка") }
+            onFailure = { e -> _uiState.value = UiState.Error(e.localizedMessage ?: "Unknown error") }
         )
     }
 
-    fun reset() { _uiState.value = UiState.Idle }
+    fun reset() {
+        _uiState.value = UiState.Idle
+    }
 }

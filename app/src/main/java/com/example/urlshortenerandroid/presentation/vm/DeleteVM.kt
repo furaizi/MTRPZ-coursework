@@ -11,9 +11,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Одноразовая задача — удалить ссылку и сообщить результат.
- * Здесь используем Channel, а не StateFlow, чтобы событие не повторялось при
- * recreation-ах экрана (например, после поворота).
+ * One-time task — delete the link and report the result.
+ * Here we use Channel instead of StateFlow so that the event
+ * is not re-emitted on screen recreation (for example, after rotation).
  */
 @HiltViewModel
 class DeleteVM @Inject constructor(
@@ -34,7 +34,7 @@ class DeleteVM @Inject constructor(
     fun delete() = viewModelScope.launch {
         deleteLink(linkId).fold(
             onSuccess = { _events.send(Event.Success) },
-            onFailure = { _events.send(Event.Error(it.message ?: "Ошибка удаления")) }
+            onFailure = { _events.send(Event.Error(it.message ?: "Error deleting")) }
         )
     }
 }
