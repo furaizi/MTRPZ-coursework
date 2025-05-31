@@ -11,19 +11,19 @@ import kotlin.random.asKotlinRandom
 
 class InMemoryLinkRepository : LinkRepository {
 
-    /** Хранилище ссылок: shortCode → LinkResponse */
+    /** Store of links: shortCode → LinkResponse */
     private val links = ConcurrentHashMap<String, LinkResponse>()
 
-    /** Статистика: shortCode → LinkStatistics */
+    /** Statistics: shortCode → LinkStatistics */
     private val stats = ConcurrentHashMap<String, LinkStatistics>()
 
-    /** генератор случайных кодов (8 a-z0-9) */
+    /** Random code generator (8 characters: a-z0-9) */
     private val rnd = SecureRandom().asKotlinRandom()
 
-    /** симулируем сетевую задержку */
+    /** Simulate network delay */
     private suspend fun networkDelay() = delay(250)
 
-    /** генерируем короткий код */
+    /** Generate short code */
     private fun genShortCode(): String =
         (1..8).joinToString("") { "abcdefghijklmnopqrstuvwxyz0123456789".random(rnd).toString() }
 
@@ -35,7 +35,7 @@ class InMemoryLinkRepository : LinkRepository {
             shortCode = code,
             url = "https://short.url/$code",
             originalUrl = url,
-            expiresAt = null,          // не истекает
+            expiresAt = null,          // does not expire
             createdAt = now
         )
         links[code] = link
@@ -59,12 +59,12 @@ class InMemoryLinkRepository : LinkRepository {
         val st = stats[id]
         if (removed == null || st == null) error("Ссылка $id не найдена")
         stats[id] = st.copy(isActive = false)
-        Response.success(Unit)        // имитируем HTTP 204
+        Response.success(Unit)        // simulate HTTP 204
     }
 
-    /* ---------- дополнительные util-методы для UI-тестов ---------- */
+    /* ---------- additional util methods for UI tests ---------- */
 
-    /** Увеличить счётчик кликов и, при желании, уникальных посетителей. */
+    /** Increment click count and, optionally, unique visitors. */
     fun click(code: String, isUniqueVisitor: Boolean = true) {
         stats.computeIfPresent(code) { _, old ->
             old.copy(
@@ -75,6 +75,6 @@ class InMemoryLinkRepository : LinkRepository {
         }
     }
 
-    /** Получить все хранящиеся ссылки — удобно для debug-экранов. */
+    /** Get all stored links — useful for debug screens. */
     fun dumpAllLinks(): List<LinkResponse> = links.values.toList()
 }
