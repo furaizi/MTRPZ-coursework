@@ -9,17 +9,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.urlshortenerandroid.R
 import com.example.urlshortenerandroid.presentation.vm.ShortenVM
 import com.example.urlshortenerandroid.data.remote.dto.LinkResponse
 import com.example.urlshortenerandroid.util.UiState
 
 /**
- * Экран «Сократить ссылку».
+ * Screen "Shorten Link".
  *
- * @param onCreated callback с linkId — для навигации к DetailsScreen.
+ * @param onCreated callback with linkId for navigation to DetailsScreen.
  */
 @Composable
 fun ShortenScreen(
@@ -40,7 +42,7 @@ fun ShortenScreen(
         OutlinedTextField(
             value = url,
             onValueChange = { url = it },
-            label = { Text("Длинный URL") },
+            label = { Text(stringResource(R.string.label_long_url)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
         )
@@ -49,15 +51,17 @@ fun ShortenScreen(
             onClick = { vm.shorten(url) },
             enabled = url.isNotBlank(),
             modifier = Modifier.align(Alignment.End)
-        ) { Text("Сократить") }
+        ) {
+            Text(stringResource(R.string.button_shorten))
+        }
 
         when (state) {
-            UiState.Idle -> { /* пусто */ }
+            UiState.Idle -> { /* empty */ }
 
-            UiState.Loading -> Row {
+            UiState.Loading -> Row(verticalAlignment = Alignment.CenterVertically) {
                 CircularProgressIndicator()
                 Spacer(Modifier.width(8.dp))
-                Text("Создаём ссылку…")
+                Text(stringResource(R.string.text_creating_link))
             }
 
             is UiState.Error -> {
@@ -69,16 +73,23 @@ fun ShortenScreen(
 
             is UiState.Success -> {
                 val link = (state as UiState.Success<LinkResponse>).data
-                Text("Короткая ссылка:", style = MaterialTheme.typography.labelLarge)
+                Text(
+                    stringResource(R.string.label_short_url),
+                    style = MaterialTheme.typography.labelLarge
+                )
                 Text(link.url, color = MaterialTheme.colorScheme.primary)
                 Spacer(Modifier.height(4.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = {
                         clipboard.setText(AnnotatedString(link.url))
-                        Toast.makeText(ctx, "Скопировано", Toast.LENGTH_SHORT).show()
-                    }) { Text("Копировать") }
+                        Toast.makeText(ctx, ctx.getString(R.string.text_copied), Toast.LENGTH_SHORT).show()
+                    }) {
+                        Text(stringResource(R.string.button_copy))
+                    }
 
-                    Button(onClick = { onCreated(link.shortCode) }) { Text("Детали") }
+                    Button(onClick = { onCreated(link.shortCode) }) {
+                        Text(stringResource(R.string.button_details))
+                    }
                 }
             }
         }
