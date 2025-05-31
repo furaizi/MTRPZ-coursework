@@ -47,7 +47,9 @@ coroutines-android              = { group = "org.jetbrains.kotlinx",      name =
 
 retrofit                        = { group = "com.squareup.retrofit2",      name = "retrofit",                  version.ref = "retrofit" }
 converter-moshi                 = { group = "com.squareup.retrofit2",      name = "converter-moshi",           version.ref = "retrofit" }
+moshi-moshi                     = { group = "com.squareup.moshi",          name = "moshi",                     version.ref = "moshi" }
 moshi-kotlin                    = { group = "com.squareup.moshi",          name = "moshi-kotlin",              version.ref = "moshi" }
+moshi-java8                     = { group = "com.squareup.moshi",          name = "moshi-java8",               version.ref = "moshi" }
 okhttp-okhttp                   = { group = "com.squareup.okhttp3",        name = "okhttp",                    version.ref = "okhttp" }
 okhttp-logging                  = { group = "com.squareup.okhttp3",        name = "logging-interceptor",       version.ref = "okhttp" }
 

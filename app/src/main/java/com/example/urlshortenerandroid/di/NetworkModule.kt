@@ -1,6 +1,8 @@
 package com.example.urlshortenerandroid.di
 
 import com.example.urlshortenerandroid.data.remote.LinkApi
+import com.example.urlshortenerandroid.data.remote.adapters.LocalDateTimeAdapter
+import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,18 +18,23 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 object NetworkModule {
     private const val BASE_URL = ""
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     fun okHttp(): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         }).build()
 
+    fun moshi(): Moshi = Moshi.Builder()
+        .add(LocalDateTimeAdapter())
+        .build()
+
     @Provides
     @Singleton
-    fun retrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
+    fun retrofit(client: OkHttpClient, moshi: Moshi): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(client)
-        .addConverterFactory(MoshiConverterFactory.create())
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
 
     @Provides

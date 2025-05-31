@@ -60,7 +60,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.tooling)
 
-    // Навигация
+    // Navigation
     implementation(libs.navigation.compose)
 
     // DI / Hilt
@@ -68,20 +68,22 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
-    // Корутины
+    // Courotines
     implementation(libs.coroutines.android)
 
-    // Сеть
+    // Networking
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
+    implementation(libs.moshi.moshi)
     implementation(libs.moshi.kotlin)
+    implementation(libs.moshi.java8)
     implementation(libs.okhttp.okhttp)
     implementation(libs.okhttp.logging)
 
-    // Жизненный цикл
+    // Lifecycle
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
-    // Тесты (по желанию)
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
