@@ -41,9 +41,7 @@ The goal is to provide a seamless mobile experience for creating, managing and a
 
 ## 📸 Screenshots
 
-| Home | Stats |
-|------|-------|
-| _\[add screenshot\]_ | _\[add screenshot\]_ |
+Є в пояснювальній записці  
 
 ---
 
