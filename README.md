@@ -13,13 +13,15 @@ The goal is to provide a seamless mobile experience for creating, managing and a
 
 ## ✨ Key Features
 
-| UI / UX | Business |
-|---------|----------|
-| 🔗 One-tap URL shortening with clipboard integration | ⚡ Fast Retrofit client with Kotlin Coroutines |
-| 📊 Inline stats (clicks, unique visitors, last access) | 🔒 Optional API key auth ready |
-| 🌗 System Dark / Light theme | 🗑️ Swipe-to-delete with undo |
-| 🌍 en / uk localisation | 📈 Deep link to full analytics dashboard |
-| 🛠️ Debug drawer (base URL switch, logs) | 🧪 JUnit + Turbine tests |
+| Category | Details |
+|----------|---------|
+| Create  | Enter a long URL and tap **Shorten** to receive an 8-character short link. |
+| Copy    | Copy the generated short URL to the clipboard with one tap. |
+| Details | View original URL, short URL and creation date on the **Details** screen. |
+| Stats   | See total clicks, unique visitors and last access time on the **Statistics** screen. |
+| Delete  | Remove a link permanently via a confirmation dialog. |
+| Debug   | Switch to an **in-memory repository** for offline UI demo and screenshot tests. |
+| CI      | GitHub Actions builds **Debug** and **Release** APKs and uploads them as workflow artifacts. |
 
 ---
 
